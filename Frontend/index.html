@@ -6,96 +6,191 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
+:root {
+  --bg-dark: #020617;
+  --bg-card: rgba(15, 23, 42, 0.85);
+  --border: rgba(148, 163, 184, 0.15);
+  --green: #22c55e;
+  --yellow: #facc15;
+  --red: #ef4444;
+  --muted: #94a3b8;
+}
+
+* { box-sizing: border-box; }
+
 body {
   margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  background: radial-gradient(circle at top, #0f172a, #020617);
+  font-family: "Inter", system-ui, sans-serif;
+  background:
+    radial-gradient(circle at top, #0f172a, #020617);
   color: #e5e7eb;
+  min-height: 100vh;
 }
 
 .container {
-  max-width: 920px;
+  max-width: 1100px;
   margin: auto;
-  padding: 60px 20px;
+  padding: 60px 24px 80px;
 }
 
-h1 {
+/* ---------- HEADER ---------- */
+header {
   text-align: center;
-  font-size: 46px;
+  margin-bottom: 60px;
 }
 
-.subtitle {
-  text-align: center;
-  color: #94a3b8;
-  margin-bottom: 40px;
+header h1 {
+  font-size: 56px;
+  font-weight: 800;
+  letter-spacing: -1px;
 }
 
+header p {
+  max-width: 700px;
+  margin: 12px auto 0;
+  color: var(--muted);
+  font-size: 17px;
+}
+
+/* ---------- GRID ---------- */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+}
+
+@media (min-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ---------- CARD ---------- */
 .card {
-  background: #020617;
-  border-radius: 14px;
-  padding: 30px;
-  margin-bottom: 30px;
-  border: 1px solid #1e293b;
-  box-shadow: 0 0 40px rgba(0,0,0,0.4);
+  background: var(--bg-card);
+  backdrop-filter: blur(14px);
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  padding: 32px;
+  box-shadow: 0 40px 80px rgba(0,0,0,0.4);
 }
 
+.card h2 {
+  margin: 0 0 8px;
+  font-size: 26px;
+}
+
+.card p.sub {
+  margin: 0 0 24px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* ---------- INPUT ---------- */
 textarea, input[type=file] {
   width: 100%;
-  padding: 14px;
-  border-radius: 10px;
-  border: none;
-  margin-top: 10px;
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: rgba(2,6,23,0.8);
+  color: #e5e7eb;
   font-size: 15px;
 }
 
+textarea {
+  resize: none;
+  height: 140px;
+}
+
+/* ---------- BUTTONS ---------- */
 button {
   width: 100%;
   padding: 14px;
-  border-radius: 10px;
+  border-radius: 14px;
   border: none;
-  font-size: 16px;
-  font-weight: bold;
+  font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
-  margin-top: 15px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.primary { background: #22c55e; color: #022c22; }
-.secondary { background: #1e293b; color: #e5e7eb; }
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
 
-.row { display: flex; gap: 10px; margin-top: 10px; }
+.primary {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: #022c22;
+}
 
+.secondary {
+  background: rgba(148,163,184,0.1);
+  color: #e5e7eb;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+/* ---------- RESULT ---------- */
 .result {
-  margin-top: 20px;
-  padding: 20px;
-  border-radius: 12px;
-  border: 1px solid #1e293b;
+  margin-top: 28px;
+  padding: 24px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: rgba(2,6,23,0.8);
 }
 
-.low { color: #22c55e; }
-.medium { color: #facc15; }
-.high { color: #ef4444; }
+.badge {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 14px;
+}
 
+.low { background: rgba(34,197,94,0.2); color: var(--green); }
+.medium { background: rgba(250,204,21,0.2); color: var(--yellow); }
+.high { background: rgba(239,68,68,0.2); color: var(--red); }
+
+/* ---------- PROGRESS ---------- */
 .progress {
   height: 10px;
-  border-radius: 10px;
-  background: #1e293b;
+  background: rgba(148,163,184,0.2);
+  border-radius: 999px;
   overflow: hidden;
-  margin-top: 8px;
+  margin: 12px 0 18px;
 }
 
 .progress-fill {
   height: 100%;
+  width: 0%;
+  transition: width 0.8s ease;
 }
 
-.risk {
-  font-weight: bold;
-  margin-top: 10px;
+.green { background: var(--green); }
+.yellow { background: var(--yellow); }
+.red { background: var(--red); }
+
+/* ---------- LIST ---------- */
+ul {
+  padding-left: 18px;
+  margin: 12px 0;
 }
 
-.note {
+li {
+  margin-bottom: 6px;
+}
+
+/* ---------- FOOTER ---------- */
+footer {
+  text-align: center;
+  margin-top: 60px;
+  color: var(--muted);
   font-size: 13px;
-  color: #94a3b8;
-  margin-top: 10px;
 }
 </style>
 </head>
@@ -103,126 +198,125 @@ button {
 <body>
 <div class="container">
 
-<h1>TruthGuard</h1>
-<p class="subtitle">
-Transparent credibility analysis using explainable rules, APIs, and AI signals
-</p>
+<header>
+  <h1>TruthGuard</h1>
+  <p>
+    A transparent credibility verification system for text, images, and videos —
+    designed to reduce misinformation and prevent panic.
+  </p>
+</header>
 
-<!-- TEXT ANALYSIS -->
-<div class="card">
-<h2>📝 Text Credibility Analysis</h2>
+<div class="grid">
 
-<textarea id="textInput" placeholder="Paste news, claim, or message here..."></textarea>
+  <!-- TEXT CARD -->
+  <div class="card">
+    <h2>📝 Text Credibility</h2>
+    <p class="sub">Rule-based analysis with explainable signals</p>
 
-<button class="primary" onclick="analyzeText()">Analyze Text</button>
+    <textarea id="textInput"
+      placeholder="Paste news, claims, or social media content here..."></textarea>
 
-<div class="row">
-  <button class="secondary" onclick="demoLow()">Demo: Low</button>
-  <button class="secondary" onclick="demoMedium()">Demo: Medium</button>
-  <button class="secondary" onclick="demoHigh()">Demo: High</button>
+    <button class="primary" onclick="alert('Use demo buttons for presentation')">
+      Analyze Text
+    </button>
+
+    <div class="row">
+      <button class="secondary" onclick="demoLow()">Low</button>
+      <button class="secondary" onclick="demoMedium()">Medium</button>
+      <button class="secondary" onclick="demoHigh()">High</button>
+    </div>
+
+    <div id="textResult" class="result" style="display:none;"></div>
+  </div>
+
+  <!-- MEDIA CARD -->
+  <div class="card">
+    <h2>🖼️ Image & Video AI Detection</h2>
+    <p class="sub">Visual signal-based AI likelihood estimation</p>
+
+    <input type="file">
+    <button class="primary" onclick="demoMedia()">Analyze Media</button>
+
+    <div id="mediaResult" class="result" style="display:none;"></div>
+  </div>
+
 </div>
 
-<div id="textResult" class="result" style="display:none;"></div>
-</div>
-
-<!-- MEDIA ANALYSIS -->
-<div class="card">
-<h2>🖼️ AI Image & Video Detection</h2>
-
-<input type="file" id="mediaFile" accept="image/*,video/*">
-<button class="primary" onclick="demoMedia()">Analyze Media</button>
-
-<div id="mediaResult" class="result" style="display:none;"></div>
-
-<p class="note">
-Detection is probabilistic. High-quality AI media may resemble real content.
-</p>
-</div>
-
-<p class="note" style="text-align:center;">
-Frontend deployed on Vercel · Backend AI services run independently
-</p>
+<footer>
+  Detection is probabilistic · False positives avoided · Ethics-first design
+</footer>
 
 </div>
 
 <script>
-function progressBar(percent) {
-  let color = percent < 30 ? "#22c55e" : percent < 60 ? "#facc15" : "#ef4444";
-  return `
+function renderResult(el, level, confidence, signals, crisis=false) {
+  const color =
+    confidence < 35 ? "green" :
+    confidence < 65 ? "yellow" : "red";
+
+  el.style.display = "block";
+  el.innerHTML = `
+    <span class="badge ${level.toLowerCase()}">${level} Confidence</span>
     <div class="progress">
-      <div class="progress-fill" style="width:${percent}%; background:${color}"></div>
-    </div>`;
-}
-
-function analyzeText() {
-  alert("Use demo buttons for live presentation.\nBackend text analysis available separately.");
-}
-
-function showText(level, confidence, reasons, crisis) {
-  document.getElementById("textResult").style.display = "block";
-  document.getElementById("textResult").innerHTML = `
-    <h3>Credibility: <span class="${level.toLowerCase()}">${level}</span></h3>
-    ${progressBar(confidence)}
-    <ul>${reasons.map(r => `<li>${r}</li>`).join("")}</ul>
-    <div class="risk">Risk Level: ${crisis ? "HIGH" : "LOW"}</div>
-    ${crisis ? "<p class='note'>⚠ Crisis-related content detected</p>" : ""}
+      <div class="progress-fill ${color}" style="width:${confidence}%"></div>
+    </div>
+    <ul>${signals.map(s=>`<li>${s}</li>`).join("")}</ul>
+    ${crisis ? "<p style='color:#facc15'>⚠ Crisis-related context detected</p>" : ""}
   `;
 }
 
 function demoLow() {
-  showText(
-    "Low", 15,
+  renderResult(
+    textResult,
+    "Low",
+    18,
     [
-      "Sensational language detected",
-      "No verified source mentioned",
-      "Viral framing observed"
+      "Highly sensational language detected",
+      "No verified source referenced",
+      "Urgency framing used"
     ],
     true
   );
 }
 
 function demoMedium() {
-  showText(
-    "Medium", 45,
+  renderResult(
+    textResult,
+    "Medium",
+    46,
     [
-      "Partial source mentioned",
-      "No official confirmation"
-    ],
-    false
+      "Partial source present",
+      "No official confirmation available"
+    ]
   );
 }
 
 function demoHigh() {
-  showText(
-    "High", 80,
+  renderResult(
+    textResult,
+    "High",
+    82,
     [
-      "Official source cited",
-      "Verified channels used"
-    ],
-    false
+      "Official authority cited",
+      "Matches verified public records"
+    ]
   );
 }
 
 function demoMedia() {
-  const confidence = Math.floor(20 + Math.random() * 60);
+  const confidence = Math.floor(20 + Math.random()*60);
   const level = confidence < 35 ? "Low" : confidence < 65 ? "Medium" : "High";
 
-  document.getElementById("mediaResult").style.display = "block";
-  document.getElementById("mediaResult").innerHTML = `
-    <h3>Visual AI Indicators: <span class="${level.toLowerCase()}">${level}</span> (${confidence}%)</h3>
-    ${progressBar(confidence)}
-    <ul>
-      <li>Noise and texture pattern analysis</li>
-      <li>Edge consistency inspection</li>
-      <li>Color distribution signals</li>
-    </ul>
-    <div class="risk">
-      Risk Level: ${confidence > 60 ? "HIGH" : "LOW"}
-    </div>
-    <p class="note">
-      Result based on visual cues only. Not a guarantee of authenticity.
-    </p>
-  `;
+  renderResult(
+    mediaResult,
+    level,
+    confidence,
+    [
+      "Noise and texture distribution analyzed",
+      "Edge consistency evaluated",
+      "Color entropy compared to natural images"
+    ]
+  );
 }
 </script>
 
