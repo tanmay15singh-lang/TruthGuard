@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TruthGuard</title>
+    <style>
+        body {
+            font-family: "Segoe UI", sans-serif;
+            background: linear-gradient(135deg, #020617, #0f172a);
+            color: #e5e7eb;
+            display: flex;
+            justify-content: center;
+            padding: 40px 0;
+        }
+
+        .container {
+            background: #020617;
+            width: 720px;
+            padding: 32px;
+            border-radius: 14px;
+            box-shadow: 0 0 40px rgba(0,0,0,0.6);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 6px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #94a3b8;
+            margin-bottom: 25px;
+        }
+
+        h2 {
+            margin-top: 30px;
+            border-left: 4px solid #22c55e;
+            padding-left: 10px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 130px;
+            margin-top: 10px;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            resize: none;
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 12px;
+            width: 100%;
+            background: #22c55e;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #020617;
+        }
+
+        .demo-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .demo-buttons button {
+            flex: 1;
+            background: #1e293b;
+            color: #e5e7eb;
+        }
+
+        .demo-buttons button:hover {
+            background: #334155;
+        }
+
+        .card {
+            background: #020617;
+            border: 1px solid #1e293b;
+            border-radius: 10px;
+            padding: 16px;
+            margin-top: 20px;
+        }
+
+        .badge {
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .low { background: #7f1d1d; color: #fecaca; }
+        .medium { background: #78350f; color: #fde68a; }
+        .high { background: #14532d; color: #bbf7d0; }
+
+        ul {
+            margin-top: 10px;
+            padding-left: 18px;
+        }
+
+        .confidence-bar {
+            background: #1e293b;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 8px;
+            height: 14px;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #22c55e, #4ade80);
+        }
+
+        .meta {
+            font-size: 13px;
+            color: #94a3b8;
+        }
+
+        hr {
+            margin: 30px 0;
+            border: 1px solid #1e293b;
+        }
+
+        .beta {
+            font-size: 12px;
+            color: #facc15;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>TruthGuard</h1>
+    <p class="subtitle">
+        Transparent credibility analysis using rules, APIs, and LLM-assisted explanations
+    </p>
+
+    <!-- TEXT SECTION -->
+    <h2>📝 Text Credibility Analysis</h2>
+    <p class="meta">
+        Rule-based Engine • External Verification APIs • Optional LLM Explanation
+    </p>
+
+    <form method="post" action="/">
+        <textarea name="content" placeholder="Paste news or claim text here...">{{ content }}</textarea>
+
+        <label class="meta">
+            <input type="checkbox" name="use_llm">
+            Enable AI Explanation (LLM-assisted)
+        </label>
+
+        <button type="submit">Analyze Text</button>
+
+        <!-- DEMO MODE -->
+        <div class="demo-buttons">
+            <button type="submit" name="demo" value="low">Demo: Low</button>
+            <button type="submit" name="demo" value="medium">Demo: Medium</button>
+            <button type="submit" name="demo" value="high">Demo: High</button>
+        </div>
+    </form>
+
+    {% if credibility %}
+    <div class="card">
+        <p>
+            Credibility:
+            <span class="badge {{ credibility|lower }}">{{ credibility }}</span>
+        </p>
+
+        <ul>
+            {% for reason in reasons %}
+                <li>{{ reason }}</li>
+            {% endfor %}
+        </ul>
+
+        <p><strong>Explanation:</strong><br>{{ explanation }}</p>
+    </div>
+    {% endif %}
+
+    <hr>
+
+    <!-- MEDIA SECTION -->
+    <h2>🖼️ AI Media Detection <span class="beta">(BETA)</span></h2>
+    <p class="meta">
+        Forensic Media Analysis • Metadata Inspection • External Verification APIs
+    </p>
+
+    <form method="post" action="/media" enctype="multipart/form-data">
+        <input type="file" name="media" required>
+        <button type="submit">Analyze Media</button>
+    </form>
+
+    {% if media_result %}
+    <div class="card">
+        <p>
+            AI Likelihood:
+            <span class="badge {{ ai_level|lower }}">{{ ai_level }}</span>
+            ({{ ai_confidence }}%)
+        </p>
+
+        <div class="confidence-bar">
+            <div class="confidence-fill" style="width: {{ ai_confidence }}%;"></div>
+        </div>
+
+        <ul>
+            {% for signal in ai_signals %}
+                <li>{{ signal }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+</div>
+
+</body>
+</html>
