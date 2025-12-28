@@ -1,112 +1,212 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>TruthGuard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <style>
     body {
-      background: linear-gradient(135deg, #0f172a, #020617);
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: radial-gradient(circle at top, #0f172a, #020617);
       color: #e5e7eb;
-      font-family: system-ui, sans-serif;
-      padding: 40px;
     }
-    h1 { font-size: 2.5rem; }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 60px 20px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 48px;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #94a3b8;
+      margin-bottom: 40px;
+    }
+
+    .card {
+      background: #020617;
+      border-radius: 14px;
+      padding: 30px;
+      box-shadow: 0 0 40px rgba(0,0,0,0.4);
+    }
+
     textarea {
       width: 100%;
       height: 140px;
+      border-radius: 10px;
+      border: none;
       padding: 15px;
-      border-radius: 10px;
-      border: none;
-      font-size: 1rem;
-      margin-top: 10px;
+      font-size: 16px;
+      resize: none;
+      outline: none;
     }
-    button {
-      margin-top: 12px;
-      padding: 12px 20px;
+
+    .btn {
+      margin-top: 15px;
+      width: 100%;
+      padding: 14px;
       border-radius: 10px;
       border: none;
+      font-size: 16px;
+      cursor: pointer;
+      background: #22c55e;
+      color: #022c22;
       font-weight: bold;
+    }
+
+    .btn:hover {
+      background: #16a34a;
+    }
+
+    .demo-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .demo-buttons button {
+      flex: 1;
+      background: #1e293b;
+      color: #e5e7eb;
+      border: none;
+      border-radius: 8px;
+      padding: 10px;
       cursor: pointer;
     }
-    .green { background: #22c55e; }
-    .gray { background: #334155; color: white; }
-    .card {
-      margin-top: 20px;
+
+    .demo-buttons button:hover {
+      background: #334155;
+    }
+
+    .result {
+      margin-top: 25px;
       padding: 20px;
-      background: #020617;
       border-radius: 12px;
+      background: #020617;
       border: 1px solid #1e293b;
+    }
+
+    .high { color: #22c55e; }
+    .medium { color: #facc15; }
+    .low { color: #ef4444; }
+
+    ul {
+      margin-top: 10px;
+    }
+
+    .note {
+      margin-top: 30px;
+      font-size: 13px;
+      color: #94a3b8;
+      text-align: center;
     }
   </style>
 </head>
-
 <body>
 
-<h1>TruthGuard</h1>
-<p>Transparent credibility analysis using rules, APIs, and AI-assisted explanations.</p>
+  <div class="container">
+    <h1>TruthGuard</h1>
+    <p class="subtitle">
+      Transparent credibility analysis using rules, APIs, and AI-assisted explanations
+    </p>
 
-<textarea id="content" placeholder="Paste news or content here..."></textarea>
+    <div class="card">
+      <h2>📝 Text Credibility Analysis</h2>
 
-<br>
-<button class="green" onclick="analyze()">Analyze Text</button>
+      <textarea id="inputText" placeholder="Paste news, social media content, or claims here..."></textarea>
 
-<br><br>
-<button class="gray" onclick="demoLow()">Demo: Low</button>
-<button class="gray" onclick="demoMedium()">Demo: Medium</button>
-<button class="gray" onclick="demoHigh()">Demo: High</button>
+      <button class="btn" onclick="analyzeText()">Analyze Text</button>
 
-<div class="card" id="result" style="display:none;">
-  <h3 id="credibility"></h3>
-  <ul id="reasons"></ul>
-</div>
+      <div class="demo-buttons">
+        <button onclick="demoLow()">Demo: Low</button>
+        <button onclick="demoMedium()">Demo: Medium</button>
+        <button onclick="demoHigh()">Demo: High</button>
+      </div>
+
+      <div id="resultBox" class="result" style="display:none;">
+        <h3>Credibility: <span id="credibilityLabel"></span></h3>
+        <ul id="reasonList"></ul>
+        <p id="explanation"></p>
+      </div>
+    </div>
+
+    <p class="note">
+      Demo mode uses predefined examples to ensure reliability during live presentation.
+    </p>
+  </div>
 
 <script>
-function showResult(level, reasons) {
-  document.getElementById("result").style.display = "block";
-  document.getElementById("credibility").innerText = "Credibility: " + level;
-  const ul = document.getElementById("reasons");
-  ul.innerHTML = "";
-  reasons.forEach(r => {
-    const li = document.createElement("li");
-    li.innerText = r;
-    ul.appendChild(li);
-  });
-}
+  function showResult(level, reasons, explanation) {
+    const box = document.getElementById("resultBox");
+    const label = document.getElementById("credibilityLabel");
+    const list = document.getElementById("reasonList");
+    const expl = document.getElementById("explanation");
 
-function analyze() {
-  alert("Backend AI analysis runs separately.\nThis demo shows UI + logic only.");
-}
+    label.textContent = level;
+    label.className = level.toLowerCase();
 
-function demoLow() {
-  document.getElementById("content").value =
-    "BREAKING!!! Shocking viral news!!! Major city taken over overnight!!! Share before deleted!!!";
-  showResult("Low", [
-    "Highly sensational language",
-    "No verified source mentioned",
-    "Urgency manipulation detected"
-  ]);
-}
+    list.innerHTML = "";
+    reasons.forEach(r => {
+      const li = document.createElement("li");
+      li.textContent = r;
+      list.appendChild(li);
+    });
 
-function demoMedium() {
-  document.getElementById("content").value =
-    "Local news reports suggest new safety measures may be announced. Officials have not confirmed.";
-  showResult("Medium", [
-    "Source mentioned but unverified",
-    "Neutral tone",
-    "Incomplete confirmation"
-  ]);
-}
+    expl.textContent = explanation;
+    box.style.display = "block";
+  }
 
-function demoHigh() {
-  document.getElementById("content").value =
-    "Official government press release published on verified channels.";
-  showResult("High", [
-    "Verified source cited",
-    "No sensational language",
-    "Matches public records"
-  ]);
-}
+  function analyzeText() {
+    alert("Live backend analysis is disabled in demo mode.\nUse Demo buttons for presentation.");
+  }
+
+  function demoLow() {
+    document.getElementById("inputText").value =
+      "BREAKING!!! Shocking viral news!!! Major city taken over overnight!!! No official source confirmed this. Share fast!";
+    showResult(
+      "Low",
+      [
+        "Sensational language detected",
+        "No official or verified source mentioned",
+        "Unverified viral-style claim"
+      ],
+      "The content uses emotionally charged language and lacks reliable sourcing, which lowers credibility."
+    );
+  }
+
+  function demoMedium() {
+    document.getElementById("inputText").value =
+      "Source: Local news reports suggest new safety measures may be announced. Officials have not yet confirmed.";
+    showResult(
+      "Medium",
+      [
+        "Partial source mentioned",
+        "No official confirmation yet"
+      ],
+      "The content references a source but lacks official confirmation, resulting in moderate credibility."
+    );
+  }
+
+  function demoHigh() {
+    document.getElementById("inputText").value =
+      "Source: Official government press release published on verified channels.";
+    showResult(
+      "High",
+      [
+        "Official and verified source cited",
+        "Consistent with known public records"
+      ],
+      "The information comes from verified government sources, indicating high credibility."
+    );
+  }
 </script>
 
 </body>
