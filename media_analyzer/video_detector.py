@@ -1,38 +1,47 @@
 import cv2
-from .image_detector import analyze_image
-import tempfile
-import os
+import numpy as np
 
 def analyze_video(path):
     cap = cv2.VideoCapture(path)
-    frame_count = 0
-    scores = []
-    signals = set()
 
-    while cap.isOpened() and frame_count < 5:
+    if not cap.isOpened():
+        return "Error", 0, ["Invalid video file"]
+
+    frame_count = 0
+    smooth_frames = 0
+    signals = []
+
+    while frame_count < 15:
         ret, frame = cap.read()
         if not ret:
             break
 
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        noise = cv2.Laplacian(gray, cv2.CV_64F).var()
+
+        if noise < 60:
+            smooth_frames += 1
+
         frame_count += 1
-        temp_path = tempfile.mktemp(suffix=".jpg")
-        cv2.imwrite(temp_path, frame)
-
-        level, confidence, frame_signals = analyze_image(temp_path)
-        scores.append(confidence)
-        signals.update(frame_signals)
-
-        os.remove(temp_path)
 
     cap.release()
 
-    avg_conf = int(sum(scores) / len(scores)) if scores else 50
+    if frame_count == 0:
+        return "Error", 0, ["No frames detected"]
 
-    if avg_conf >= 75:
-        level = "High"
-    elif avg_conf >= 55:
-        level = "Medium"
-    else:
+    smooth_ratio = smooth_frames / frame_count
+
+    if smooth_ratio < 0.3:
         level = "Low"
+        confidence = 20
+        signals.append("Natural temporal noise detected")
+    elif smooth_ratio < 0.6:
+        level = "Medium"
+        confidence = 50
+        signals.append("Partial AI-like smoothing across frames")
+    else:
+        level = "High"
+        confidence = 75
+        signals.append("Consistent AI-style frame smoothing")
 
-    return level, avg_conf, list(signals)
+    return level, confidence, signals

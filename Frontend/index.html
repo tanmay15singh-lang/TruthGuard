@@ -1,151 +1,259 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>TruthGuard</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <title>TruthGuard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-body {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  background: radial-gradient(circle at top, #0f172a, #020617);
-  color: #e5e7eb;
-}
-.container {
-  max-width: 900px;
-  margin: auto;
-  padding: 60px 20px;
-}
-h1 { text-align:center; font-size:48px; }
-.subtitle { text-align:center; color:#94a3b8; margin-bottom:40px; }
-.card {
-  background:#020617;
-  padding:30px;
-  border-radius:14px;
-  margin-bottom:30px;
-  box-shadow:0 0 40px rgba(0,0,0,.4);
-}
-textarea, input[type=file] {
-  width:100%;
-  padding:15px;
-  border-radius:10px;
-  border:none;
-  margin-top:10px;
-}
-button {
-  width:100%;
-  padding:14px;
-  border-radius:10px;
-  border:none;
-  font-size:16px;
-  font-weight:bold;
-  cursor:pointer;
-  margin-top:15px;
-}
-.primary { background:#22c55e; color:#022c22; }
-.secondary { background:#1e293b; color:#e5e7eb; }
-.result {
-  margin-top:20px;
-  padding:20px;
-  border-radius:12px;
-  border:1px solid #1e293b;
-}
-.low { color:#ef4444 }
-.medium { color:#facc15 }
-.high { color:#22c55e }
-.note { text-align:center; font-size:13px; color:#94a3b8; margin-top:20px; }
-.demo-row { display:flex; gap:10px; margin-top:10px; }
-</style>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: radial-gradient(circle at top, #0f172a, #020617);
+      color: #e5e7eb;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 60px 20px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 46px;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #94a3b8;
+      margin-bottom: 40px;
+    }
+
+    .card {
+      background: #020617;
+      border-radius: 14px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 0 40px rgba(0,0,0,0.4);
+      border: 1px solid #1e293b;
+    }
+
+    textarea, input[type=file] {
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      border: none;
+      margin-top: 10px;
+      font-size: 15px;
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      border: none;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+
+    .primary {
+      background: #22c55e;
+      color: #022c22;
+    }
+
+    .secondary {
+      background: #1e293b;
+      color: #e5e7eb;
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .result {
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid #1e293b;
+    }
+
+    .low { color: #22c55e; }
+    .medium { color: #facc15; }
+    .high { color: #ef4444; }
+
+    ul {
+      margin-top: 10px;
+    }
+
+    .note {
+      font-size: 13px;
+      color: #94a3b8;
+      margin-top: 15px;
+      text-align: center;
+    }
+  </style>
 </head>
 
 <body>
 <div class="container">
 
-<h1>TruthGuard</h1>
-<p class="subtitle">
-Transparent credibility analysis using rules, APIs, and AI-assisted explanations
-</p>
+  <h1>TruthGuard</h1>
+  <p class="subtitle">
+    Transparent credibility analysis using rules, APIs, and AI-assisted explanations
+  </p>
 
-<!-- TEXT -->
-<div class="card">
-<h2>📝 Text Credibility Analysis</h2>
+  <!-- TEXT ANALYSIS -->
+  <div class="card">
+    <h2>📝 Text Credibility Analysis</h2>
 
-<textarea id="textInput">BREAKING!!! Shocking viral news!!! Major city taken over overnight!!!</textarea>
+    <textarea id="textInput" placeholder="Paste news, claim, or message here..."></textarea>
 
-<button class="primary" onclick="alert('Use Demo buttons for live presentation')">Analyze Text</button>
+    <button class="primary" onclick="analyzeText()">Analyze Text</button>
 
-<div class="demo-row">
-<button class="secondary" onclick="demoLow()">Demo: Low</button>
-<button class="secondary" onclick="demoMedium()">Demo: Medium</button>
-<button class="secondary" onclick="demoHigh()">Demo: High</button>
-</div>
+    <div class="row">
+      <button class="secondary" onclick="demoLow()">Demo: Low</button>
+      <button class="secondary" onclick="demoMedium()">Demo: Medium</button>
+      <button class="secondary" onclick="demoHigh()">Demo: High</button>
+    </div>
 
-<div id="textResult" class="result"></div>
-</div>
+    <div id="textResult" class="result" style="display:none;"></div>
+  </div>
 
-<!-- MEDIA -->
-<div class="card">
-<h2>🖼️ AI Image & Video Detection</h2>
+  <!-- MEDIA AI DETECTION -->
+  <div class="card">
+    <h2>🖼️ AI Image & Video Detection</h2>
+    <p style="color:#94a3b8">
+      Upload an image or video to estimate whether it is AI-generated.
+    </p>
 
-<p style="color:#94a3b8">
-Upload an image or video to analyze whether it is AI-generated.
-</p>
+    <input type="file" id="mediaFile" accept="image/*,video/*">
 
-<input type="file">
+    <button class="primary" onclick="analyzeMedia()">Analyze Media</button>
 
-<button class="primary" onclick="demoMedia()">Analyze Media</button>
+    <div id="mediaResult" class="result" style="display:none;"></div>
 
-<div id="mediaResult" class="result"></div>
+    <p class="note">
+      Detection is probabilistic and based on explainable visual signals.
+    </p>
+  </div>
 
-<p class="note">
-Media detection is powered by deepfake and AI-generation models via backend APIs.
-</p>
-</div>
-
-<p class="note">
-Live backend available locally. Vercel deployment uses safe demo mode.
-</p>
+  <p class="note">
+    Frontend deployed on Vercel. AI processing handled by backend APIs.
+  </p>
 
 </div>
 
 <script>
-function demoLow(){
-document.getElementById("textResult").innerHTML=`
-<h3>Credibility: <span class="low">Low</span></h3>
-<ul>
-<li>Sensational language detected</li>
-<li>No official source mentioned</li>
-<li>Urgent viral framing</li>
-</ul>`;
+/* 🔴 CHANGE THIS WHEN DEPLOYING BACKEND */
+const BACKEND_URL = "http://127.0.0.1:5000";
+
+/* ---------- TEXT DEMO ---------- */
+function showText(level, reasons, explanation) {
+  const box = document.getElementById("textResult");
+  box.style.display = "block";
+
+  box.innerHTML = `
+    <h3>Credibility: <span class="${level.toLowerCase()}">${level}</span></h3>
+    <ul>${reasons.map(r => `<li>${r}</li>`).join("")}</ul>
+    <p>${explanation}</p>
+  `;
 }
 
-function demoMedium(){
-document.getElementById("textResult").innerHTML=`
-<h3>Credibility: <span class="medium">Medium</span></h3>
-<ul>
-<li>Partial source mentioned</li>
-<li>No official confirmation</li>
-</ul>`;
+function analyzeText() {
+  alert("For live demo, use the predefined examples.\nBackend API available separately.");
 }
 
-function demoHigh(){
-document.getElementById("textResult").innerHTML=`
-<h3>Credibility: <span class="high">High</span></h3>
-<ul>
-<li>Official government source</li>
-<li>Verified channels used</li>
-</ul>`;
+function demoLow() {
+  showText(
+    "Low",
+    [
+      "Sensational language detected",
+      "No verified source mentioned",
+      "Urgency manipulation"
+    ],
+    "Highly viral and emotionally charged content with no reliable sourcing."
+  );
 }
 
-function demoMedia(){
-document.getElementById("mediaResult").innerHTML=`
-<h3>AI Generation Likelihood: <span class="medium">64%</span></h3>
-<ul>
-<li>Texture inconsistencies detected</li>
-<li>Unnatural lighting patterns</li>
-<li>Compression artifacts</li>
-</ul>`;
+function demoMedium() {
+  showText(
+    "Medium",
+    [
+      "Partial source mentioned",
+      "No official confirmation yet"
+    ],
+    "The content has mixed credibility signals and requires verification."
+  );
+}
+
+function demoHigh() {
+  showText(
+    "High",
+    [
+      "Official source cited",
+      "Matches verified public records"
+    ],
+    "Information originates from trusted and verifiable sources."
+  );
+}
+
+/* ---------- MEDIA AI DETECTION ---------- */
+async function analyzeMedia() {
+  const fileInput = document.getElementById("mediaFile");
+  const resultBox = document.getElementById("mediaResult");
+
+  if (!fileInput.files.length) {
+    alert("Please select an image or video.");
+    return;
+  }
+
+  const file = fileInput.files[0];
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const endpoint = file.type.startsWith("video")
+    ? "/api/video"
+    : "/api/image";
+
+  resultBox.style.display = "block";
+  resultBox.innerHTML = "Analyzing media...";
+
+  try {
+    const response = await fetch(BACKEND_URL + endpoint, {
+      method: "POST",
+      body: formData
+    });
+
+    const data = await response.json();
+
+    if (data.error) {
+      resultBox.innerHTML = `<p style="color:red">${data.error}</p>`;
+      return;
+    }
+
+    resultBox.innerHTML = `
+      <h3>
+        AI Likelihood:
+        <span class="${data.ai_level.toLowerCase()}">
+          ${data.ai_level} (${data.confidence}%)
+        </span>
+      </h3>
+      <ul>${data.signals.map(s => `<li>${s}</li>`).join("")}</ul>
+      <p style="font-size:13px;color:#94a3b8">
+        Result is probabilistic and may vary due to compression and quality.
+      </p>
+    `;
+  } catch (err) {
+    resultBox.innerHTML =
+      `<p style="color:red">Backend not reachable.</p>`;
+  }
 }
 </script>
 

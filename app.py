@@ -14,17 +14,21 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 
-# ---------------- HEALTH CHECK ----------------
+# --------------------------------------------------
+# HEALTH CHECK
+# --------------------------------------------------
 @app.route("/", methods=["GET"])
-def home():
+def health():
     return jsonify({
         "status": "TruthGuard backend running",
         "frontend": "https://truth-guard-vert.vercel.app"
     })
 
 
-# ---------------- TEXT CREDIBILITY API ----------------
-@app.route("/analyze-text", methods=["POST"])
+# --------------------------------------------------
+# TEXT CREDIBILITY API
+# --------------------------------------------------
+@app.route("/api/text", methods=["POST"])
 def analyze_text():
     data = request.json
     content = data.get("content", "")
@@ -35,12 +39,14 @@ def analyze_text():
 
     credibility, reasons, base_explanation = evaluate_content(content)
 
-    explanation = base_explanation
     if use_llm:
         explanation = (
-            "AI-assisted explanation: The system evaluated tone, "
-            "source indicators, and verification signals to estimate credibility."
+            "This explanation is AI-assisted. The system analyzed language tone, "
+            "source reliability indicators, and fact-check similarity signals "
+            "to estimate credibility."
         )
+    else:
+        explanation = base_explanation
 
     return jsonify({
         "credibility": credibility,
@@ -49,42 +55,72 @@ def analyze_text():
     })
 
 
-# ---------------- MEDIA AI DETECTION API ----------------
-@app.route("/media", methods=["POST"])
-def media_check():
-    file = request.files.get("media")
+# --------------------------------------------------
+# IMAGE AI DETECTION API
+# --------------------------------------------------
+@app.route("/api/image", methods=["POST"])
+def detect_image():
+    if "file" not in request.files:
+        return jsonify({"error": "No file uploaded"}), 400
 
-    if not file or file.filename == "":
-        return jsonify({
-            "ai_level": "Error",
-            "confidence": 0,
-            "signals": ["No media file uploaded"]
-        }), 400
+    file = request.files["file"]
+    if file.filename == "":
+        return jsonify({"error": "Empty filename"}), 400
 
-    filename = file.filename.lower()
-    path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+    path = os.path.join(UPLOAD_FOLDER, file.filename)
     file.save(path)
 
     try:
-        if filename.endswith((".jpg", ".jpeg", ".png")):
-            ai_level, confidence, signals = analyze_image(path)
-        elif filename.endswith((".mp4", ".avi", ".mov")):
-            ai_level, confidence, signals = analyze_video(path)
-        else:
-            ai_level = "Unsupported"
-            confidence = 0
-            signals = ["Unsupported file format"]
+        level, confidence, signals = analyze_image(path)
     except Exception as e:
-        ai_level = "Error"
-        confidence = 0
-        signals = [str(e)]
+        return jsonify({
+            "level": "Error",
+            "confidence": 0,
+            "signals": [str(e)]
+        }), 500
 
     return jsonify({
-        "ai_level": ai_level,
+        "media_type": "image",
+        "ai_level": level,
         "confidence": confidence,
         "signals": signals
     })
 
 
+# --------------------------------------------------
+# VIDEO AI DETECTION API
+# --------------------------------------------------
+@app.route("/api/video", methods=["POST"])
+def detect_video():
+    if "file" not in request.files:
+        return jsonify({"error": "No file uploaded"}), 400
+
+    file = request.files["file"]
+    if file.filename == "":
+        return jsonify({"error": "Empty filename"}), 400
+
+    path = os.path.join(UPLOAD_FOLDER, file.filename)
+    file.save(path)
+
+    try:
+        level, confidence, signals = analyze_video(path)
+    except Exception as e:
+        return jsonify({
+            "level": "Error",
+            "confidence": 0,
+            "signals": [str(e)]
+        }), 500
+
+    return jsonify({
+        "media_type": "video",
+        "ai_level": level,
+        "confidence": confidence,
+        "signals": signals
+    })
+
+
+# --------------------------------------------------
+# RUN LOCAL
+# --------------------------------------------------
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
