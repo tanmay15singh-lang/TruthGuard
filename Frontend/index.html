@@ -4,72 +4,74 @@
   <meta charset="UTF-8" />
   <title>TruthGuard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="./style.css" />
+
+  <!-- IMPORTANT: keep path absolute -->
+  <link rel="stylesheet" href="/style.css" />
 </head>
 
 <body>
 
-  <h1 class="app-title">TruthGuard</h1>
-  <p class="app-subtitle">
+  <h1 class="title">TruthGuard</h1>
+  <p class="subtitle">
     A transparent credibility verification system for text, images, and videos — designed to reduce misinformation and prevent panic.
   </p>
 
-  <div class="main-container">
+  <div class="container">
 
     <!-- TEXT CREDIBILITY CARD -->
     <div class="card">
-      <div class="card-header">
-        <span class="icon">📄</span>
-        <h2>Text Credibility</h2>
-      </div>
-      <p class="card-subtitle">Rule-based analysis with explainable signals</p>
+      <h2>📄 Text Credibility</h2>
+      <p class="muted">Rule-based analysis with explainable signals</p>
 
       <textarea
         id="textInput"
         placeholder="Paste news, claims, or social media content here..."
       ></textarea>
 
-      <button id="analyzeTextBtn" class="primary-btn">Analyze Text</button>
+      <button id="analyzeTextBtn" class="primary full">
+        Analyze Text
+      </button>
 
-      <div class="confidence-levels">
+      <div class="levels">
         <span>Low</span>
         <span>Medium</span>
         <span>High</span>
       </div>
 
-      <div class="analysis-result">
-        <span class="confidence-tag low">Low Confidence</span>
-        <div class="confidence-bar">
-          <div class="confidence-fill low"></div>
+      <!-- RESULT BOX (always visible like your original UI) -->
+      <div class="result">
+        <h3 class="low">Low Confidence</h3>
+
+        <div class="bar">
+          <div class="bar-fill low"></div>
         </div>
+
         <ul>
           <li>Highly sensational language detected</li>
           <li>No verified source referenced</li>
           <li>Urgency framing used</li>
         </ul>
+
         <p class="warning">⚠ Crisis-related context detected</p>
       </div>
     </div>
 
     <!-- IMAGE / VIDEO CARD -->
     <div class="card">
-      <div class="card-header">
-        <span class="icon">🖼️</span>
-        <h2>Image & Video AI Detection</h2>
-      </div>
-      <p class="card-subtitle">Visual signal-based AI likelihood estimation</p>
+      <h2>🖼️ Image & Video AI Detection</h2>
+      <p class="muted">Visual signal-based AI likelihood estimation</p>
 
       <input type="file" />
-      <button class="primary-btn">Analyze Media</button>
+      <button class="primary full">Analyze Media</button>
     </div>
 
   </div>
 
-  <p class="footer-text">
+  <footer>
     Detection is probabilistic · Ethics-first design · False positives avoided
-  </p>
+  </footer>
 
-  <!-- ✅ INLINE JS (NO EXTERNAL CONFUSION) -->
+  <!-- INLINE JS: SIMPLE + RELIABLE -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const textarea = document.getElementById("textInput");
@@ -77,7 +79,7 @@
 
       if (!textarea || !analyzeBtn) return;
 
-      // preload demo text
+      // preload demo text (silent, no popup)
       textarea.value = `BREAKING NEWS:
 
 Government of India has clarified that there is NO nationwide internet shutdown.
