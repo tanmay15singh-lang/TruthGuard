@@ -1,119 +1,218 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>TruthGuard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="/style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: radial-gradient(circle at top, #0f172a, #020617);
+      color: #e5e7eb;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 60px 20px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 46px;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #94a3b8;
+      margin-bottom: 40px;
+    }
+
+    .card {
+      background: #020617;
+      border-radius: 14px;
+      padding: 30px;
+      margin-bottom: 30px;
+      border: 1px solid #1e293b;
+      box-shadow: 0 0 40px rgba(0,0,0,0.4);
+    }
+
+    textarea {
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      border: none;
+      font-size: 15px;
+      outline: none;
+      resize: none;
+      height: 140px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      border: none;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+
+    .primary {
+      background: #22c55e;
+      color: #022c22;
+    }
+
+    .secondary {
+      background: #1e293b;
+      color: #e5e7eb;
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .result {
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid #1e293b;
+    }
+
+    .low { color: #22c55e; }
+    .medium { color: #facc15; }
+    .high { color: #ef4444; }
+
+    ul {
+      margin-top: 10px;
+      padding-left: 18px;
+    }
+
+    .note {
+      font-size: 13px;
+      color: #94a3b8;
+      margin-top: 12px;
+    }
+  </style>
 </head>
 
 <body>
-  <div class="app">
-    <h1 class="title">TruthGuard</h1>
-    <p class="subtitle">
-      A transparent credibility verification system for text, images, and videos — designed to reduce misinformation and prevent panic.
-    </p>
+<div class="container">
 
-    <div class="cards">
+  <h1>TruthGuard</h1>
+  <p class="subtitle">
+    Transparent credibility analysis using rule-based logic and verification signals
+  </p>
 
-      <!-- TEXT CARD -->
-      <div class="card">
-        <h2>📄 Text Credibility</h2>
-        <p class="desc">Rule-based analysis with explainable signals</p>
+  <!-- TEXT CREDIBILITY -->
+  <div class="card">
+    <h2>📝 Text Credibility Analysis</h2>
 
-        <textarea id="textInput" placeholder="Paste news, claims, or social media content here..."></textarea>
-        <button id="analyzeText">Analyze Text</button>
+    <textarea id="textInput"
+      placeholder="Paste news, claims, or social media content here..."></textarea>
 
-        <div class="levels">
-          <span>Low</span>
-          <span>Medium</span>
-          <span>High</span>
-        </div>
+    <button class="primary" onclick="analyzeText()">Analyze Text</button>
 
-        <div class="result" id="textResult">
-          <div class="badge low" id="textBadge">Low Confidence</div>
-          <div class="bar">
-            <div class="fill low" id="textFill"></div>
-          </div>
-          <ul id="textSignals">
-            <li>Highly sensational language detected</li>
-            <li>No verified source referenced</li>
-            <li>Urgency framing used</li>
-          </ul>
-          <p class="warning">⚠ Crisis-related context detected</p>
-        </div>
-      </div>
-
-      <!-- MEDIA CARD -->
-      <div class="card">
-        <h2>🖼️ Image & Video AI Detection</h2>
-        <p class="desc">Visual signal-based AI likelihood estimation</p>
-
-        <input type="file" id="mediaInput" />
-        <button id="analyzeMedia">Analyze Media</button>
-
-        <!-- MEDIA RESULT -->
-        <div class="result" id="mediaResult" style="display:none;">
-          <div class="badge high" id="mediaBadge">AI Generated Likelihood: 78%</div>
-          <div class="bar">
-            <div class="fill high" style="width:78%;"></div>
-          </div>
-          <ul>
-            <li>Inconsistent lighting patterns detected</li>
-            <li>Texture artifacts in facial regions</li>
-            <li>Metadata anomalies found</li>
-          </ul>
-        </div>
-      </div>
-
+    <div class="row">
+      <button class="secondary" onclick="demoLow()">Demo: Low</button>
+      <button class="secondary" onclick="demoMedium()">Demo: Medium</button>
+      <button class="secondary" onclick="demoHigh()">Demo: High</button>
     </div>
 
-    <footer>
-      Detection is probabilistic · Ethics-first design · False positives avoided
-    </footer>
+    <div id="textResult" class="result" style="display:none;"></div>
+
+    <p class="note">
+      Demo buttons show predefined examples. Analyze Text uses the backend engine.
+    </p>
   </div>
 
-  <!-- INTERACTION SCRIPT -->
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      // TEXT LOGIC
-      const textInput = document.getElementById("textInput");
-      const analyzeText = document.getElementById("analyzeText");
-      const textBadge = document.getElementById("textBadge");
-      const textFill = document.getElementById("textFill");
-      const textSignals = document.getElementById("textSignals");
+</div>
 
-      textInput.value =
-        "Government of India has clarified that there is no nationwide internet shutdown.";
+<script>
+/* ---------- BACKEND ANALYSIS ---------- */
+async function analyzeText() {
+  const text = document.getElementById("textInput").value.trim();
+  if (!text) {
+    alert("Please enter some text");
+    return;
+  }
 
-      analyzeText.addEventListener("click", () => {
-        const text = textInput.value.toLowerCase();
-        if (text.includes("government") || text.includes("official")) {
-          textBadge.textContent = "High Confidence";
-          textBadge.className = "badge high";
-          textFill.className = "fill high";
-          textFill.style.width = "80%";
-          textSignals.innerHTML = `
-            <li>Official authority cited</li>
-            <li>Neutral language detected</li>
-            <li>Matches verified public records</li>
-          `;
-        }
-      });
+  const box = document.getElementById("textResult");
+  box.style.display = "block";
+  box.innerHTML = "Analyzing...";
 
-      // MEDIA LOGIC (FAKE BUT BELIEVABLE)
-      const analyzeMedia = document.getElementById("analyzeMedia");
-      const mediaInput = document.getElementById("mediaInput");
-      const mediaResult = document.getElementById("mediaResult");
-
-      analyzeMedia.addEventListener("click", () => {
-        if (!mediaInput.files.length) {
-          alert("Please select an image or video file");
-          return;
-        }
-        mediaResult.style.display = "block";
-      });
+  try {
+    const response = await fetch("/analyze", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text })
     });
-  </script>
+
+    const data = await response.json();
+
+    box.innerHTML = `
+      <h3>
+        Credibility:
+        <span class="${data.credibility.toLowerCase()}">
+          ${data.credibility}
+        </span>
+      </h3>
+      <ul>
+        ${data.reasons.map(r => `<li>${r}</li>`).join("")}
+      </ul>
+      <p class="note">${data.explanation}</p>
+    `;
+  } catch (e) {
+    box.innerHTML = "<p style='color:red'>Backend error</p>";
+  }
+}
+
+/* ---------- DEMO EXAMPLES (FRONTEND ONLY) ---------- */
+function showDemo(level, reasons) {
+  const box = document.getElementById("textResult");
+  box.style.display = "block";
+  box.innerHTML = `
+    <h3>
+      Credibility:
+      <span class="${level.toLowerCase()}">
+        ${level}
+      </span>
+    </h3>
+    <ul>
+      ${reasons.map(r => `<li>${r}</li>`).join("")}
+    </ul>
+    <p class="note">This is a demo example.</p>
+  `;
+}
+
+function demoLow() {
+  showDemo("Low", [
+    "Sensational language detected",
+    "No official confirmation mentioned",
+    "No clear source provided"
+  ]);
+}
+
+function demoMedium() {
+  showDemo("Medium", [
+    "Partial source mentioned",
+    "No official confirmation available"
+  ]);
+}
+
+function demoHigh() {
+  showDemo("High", [
+    "Official government source cited",
+    "Information matches verified records"
+  ]);
+}
+</script>
+
 </body>
 </html>
