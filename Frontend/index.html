@@ -4,82 +4,67 @@
   <meta charset="UTF-8" />
   <title>TruthGuard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- IMPORTANT: keep path absolute -->
   <link rel="stylesheet" href="/style.css" />
 </head>
 
 <body>
+  <div class="app">
+    <h1 class="title">TruthGuard</h1>
+    <p class="subtitle">
+      A transparent credibility verification system for text, images, and videos — designed to reduce misinformation and prevent panic.
+    </p>
 
-  <h1 class="title">TruthGuard</h1>
-  <p class="subtitle">
-    A transparent credibility verification system for text, images, and videos — designed to reduce misinformation and prevent panic.
-  </p>
+    <div class="cards">
 
-  <div class="container">
+      <!-- TEXT CARD -->
+      <div class="card">
+        <h2>📄 Text Credibility</h2>
+        <p class="desc">Rule-based analysis with explainable signals</p>
 
-    <!-- TEXT CREDIBILITY CARD -->
-    <div class="card">
-      <h2>📄 Text Credibility</h2>
-      <p class="muted">Rule-based analysis with explainable signals</p>
+        <textarea id="textInput" placeholder="Paste news, claims, or social media content here..."></textarea>
 
-      <textarea
-        id="textInput"
-        placeholder="Paste news, claims, or social media content here..."
-      ></textarea>
+        <button id="analyzeText">Analyze Text</button>
 
-      <button id="analyzeTextBtn" class="primary full">
-        Analyze Text
-      </button>
-
-      <div class="levels">
-        <span>Low</span>
-        <span>Medium</span>
-        <span>High</span>
-      </div>
-
-      <!-- RESULT BOX (always visible like your original UI) -->
-      <div class="result">
-        <h3 class="low">Low Confidence</h3>
-
-        <div class="bar">
-          <div class="bar-fill low"></div>
+        <div class="levels">
+          <span>Low</span>
+          <span>Medium</span>
+          <span>High</span>
         </div>
 
-        <ul>
-          <li>Highly sensational language detected</li>
-          <li>No verified source referenced</li>
-          <li>Urgency framing used</li>
-        </ul>
-
-        <p class="warning">⚠ Crisis-related context detected</p>
+        <div class="result">
+          <div class="badge low">Low Confidence</div>
+          <div class="bar">
+            <div class="fill low"></div>
+          </div>
+          <ul>
+            <li>Highly sensational language detected</li>
+            <li>No verified source referenced</li>
+            <li>Urgency framing used</li>
+          </ul>
+          <p class="warning">⚠ Crisis-related context detected</p>
+        </div>
       </div>
+
+      <!-- MEDIA CARD -->
+      <div class="card">
+        <h2>🖼️ Image & Video AI Detection</h2>
+        <p class="desc">Visual signal-based AI likelihood estimation</p>
+
+        <input type="file" />
+        <button>Analyze Media</button>
+      </div>
+
     </div>
 
-    <!-- IMAGE / VIDEO CARD -->
-    <div class="card">
-      <h2>🖼️ Image & Video AI Detection</h2>
-      <p class="muted">Visual signal-based AI likelihood estimation</p>
-
-      <input type="file" />
-      <button class="primary full">Analyze Media</button>
-    </div>
-
+    <footer>
+      Detection is probabilistic · Ethics-first design · False positives avoided
+    </footer>
   </div>
 
-  <footer>
-    Detection is probabilistic · Ethics-first design · False positives avoided
-  </footer>
-
-  <!-- INLINE JS: SIMPLE + RELIABLE -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const textarea = document.getElementById("textInput");
-      const analyzeBtn = document.getElementById("analyzeTextBtn");
 
-      if (!textarea || !analyzeBtn) return;
-
-      // preload demo text (silent, no popup)
       textarea.value = `BREAKING NEWS:
 
 Government of India has clarified that there is NO nationwide internet shutdown.
@@ -88,12 +73,7 @@ Officials stated that viral social media claims are false and misleading.
 No official directive has been issued.
 
 Source: Press Information Bureau (PIB), Government of India`;
-
-      analyzeBtn.addEventListener("click", () => {
-        textarea.focus();
-      });
     });
   </script>
-
 </body>
 </html>
