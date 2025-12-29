@@ -125,7 +125,7 @@ button {
 
 <h1>TruthGuard</h1>
 <p class="subtitle">
-Demo Mode · Transparent misinformation & synthetic media detection
+Demo Mode · Transparent credibility analysis using rule-based logic
 </p>
 
 <!-- TEXT CREDIBILITY -->
@@ -148,7 +148,7 @@ Demo Mode · Transparent misinformation & synthetic media detection
   <div id="textResult" class="result" style="display:none;"></div>
 
   <p class="note">
-    Demo mode uses simulated responses. Backend logic implemented separately.
+    Demo mode uses frontend rule-based logic. Backend implementation available separately.
   </p>
 </div>
 
@@ -161,45 +161,104 @@ Demo Mode · Transparent misinformation & synthetic media detection
   <div id="mediaResult" class="result" style="display:none;"></div>
 
   <p class="note">
-    Visual AI detection shown for demonstration purposes.
+    Media detection shown for demonstration purposes.
   </p>
 </div>
 
 </div>
 
 <script>
-function showResult(level, confidence, reasons, crisis=false) {
+function renderResult(level, confidence, reasons, crisis=false) {
   const color = confidence < 35 ? "#22c55e" :
                 confidence < 65 ? "#facc15" : "#ef4444";
 
   return `
-    <span class="badge ${level.toLowerCase()}-b">${level} Credibility</span>
+    <span class="badge ${level.toLowerCase()}-b">
+      ${level} Credibility
+    </span>
+
     <div class="progress">
       <div class="progress-fill" style="width:${confidence}%; background:${color}"></div>
     </div>
+
     <ul>${reasons.map(r => `<li>${r}</li>`).join("")}</ul>
+
     ${crisis ? "<p class='note'>⚠ Crisis-related content detected</p>" : ""}
   `;
 }
 
+/* ---------- ANALYZE TEXT (DYNAMIC, NO BACKEND) ---------- */
 function analyzeText() {
-  document.getElementById("textResult").style.display = "block";
-  document.getElementById("textResult").innerHTML =
-    showResult(
-      "Medium",
-      45,
-      [
-        "Neutral tone detected",
-        "Source presence unclear",
-        "No official confirmation available"
-      ]
-    );
+  const text = document.getElementById("textInput").value.toLowerCase();
+  const box = document.getElementById("textResult");
+
+  box.style.display = "block";
+
+  const sensationalWords = [
+    "breaking", "shocking", "viral",
+    "share this", "share fast", "urgent"
+  ];
+
+  const denialPhrases = [
+    "no official source",
+    "not confirmed",
+    "unverified",
+    "rumor"
+  ];
+
+  const officialSources = [
+    "official government",
+    "government press",
+    "ministry of",
+    "official press release",
+    "verified government",
+    "source: official",
+    "source: government"
+  ];
+
+  const isSensational = sensationalWords.some(w => text.includes(w));
+  const noConfirmation = denialPhrases.some(p => text.includes(p));
+  const hasSource = text.includes("source:");
+  const hasOfficial = officialSources.some(o => text.includes(o));
+
+  let level = "Medium";
+  let confidence = 48;
+  let reasons = [];
+
+  if (isSensational && (noConfirmation || !hasSource)) {
+    level = "Low";
+    confidence = 15;
+    reasons = [
+      "Sensational language detected",
+      "No official confirmation mentioned",
+      "No clear source provided"
+    ];
+  } 
+  else if (hasOfficial && !isSensational) {
+    level = "High";
+    confidence = 82;
+    reasons = [
+      "Official government source cited",
+      "Information aligns with verified records"
+    ];
+  } 
+  else {
+    level = "Medium";
+    confidence = 48;
+    reasons = [
+      "Partial or unclear source mentioned",
+      "Information not fully verified"
+    ];
+  }
+
+  box.innerHTML = renderResult(level, confidence, reasons);
 }
 
+/* ---------- DEMO BUTTONS ---------- */
 function demoLow() {
   document.getElementById("textResult").style.display = "block";
   document.getElementById("textResult").innerHTML =
-    showResult(
+    renderResult(
       "Low",
       15,
       [
@@ -214,7 +273,7 @@ function demoLow() {
 function demoMedium() {
   document.getElementById("textResult").style.display = "block";
   document.getElementById("textResult").innerHTML =
-    showResult(
+    renderResult(
       "Medium",
       48,
       [
@@ -227,7 +286,7 @@ function demoMedium() {
 function demoHigh() {
   document.getElementById("textResult").style.display = "block";
   document.getElementById("textResult").innerHTML =
-    showResult(
+    renderResult(
       "High",
       82,
       [
@@ -237,10 +296,11 @@ function demoHigh() {
     );
 }
 
+/* ---------- MEDIA DEMO ---------- */
 function demoMedia() {
   document.getElementById("mediaResult").style.display = "block";
   document.getElementById("mediaResult").innerHTML =
-    showResult(
+    renderResult(
       "Low",
       18,
       [
