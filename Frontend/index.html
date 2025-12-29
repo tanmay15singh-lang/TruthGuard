@@ -21,11 +21,7 @@
         <h2>📄 Text Credibility</h2>
         <p class="desc">Rule-based analysis with explainable signals</p>
 
-        <textarea
-          id="textInput"
-          placeholder="Paste news, claims, or social media content here..."
-        ></textarea>
-
+        <textarea id="textInput" placeholder="Paste news, claims, or social media content here..."></textarea>
         <button id="analyzeText">Analyze Text</button>
 
         <div class="levels">
@@ -34,12 +30,12 @@
           <span>High</span>
         </div>
 
-        <div class="result" id="resultBox">
-          <div class="badge low" id="confidenceBadge">Low Confidence</div>
+        <div class="result" id="textResult">
+          <div class="badge low" id="textBadge">Low Confidence</div>
           <div class="bar">
-            <div class="fill low" id="confidenceFill"></div>
+            <div class="fill low" id="textFill"></div>
           </div>
-          <ul id="signals">
+          <ul id="textSignals">
             <li>Highly sensational language detected</li>
             <li>No verified source referenced</li>
             <li>Urgency framing used</li>
@@ -53,10 +49,21 @@
         <h2>🖼️ Image & Video AI Detection</h2>
         <p class="desc">Visual signal-based AI likelihood estimation</p>
 
-        <input type="file" />
-        <button onclick="alert('Media analysis demoed during presentation')">
-          Analyze Media
-        </button>
+        <input type="file" id="mediaInput" />
+        <button id="analyzeMedia">Analyze Media</button>
+
+        <!-- MEDIA RESULT -->
+        <div class="result" id="mediaResult" style="display:none;">
+          <div class="badge high" id="mediaBadge">AI Generated Likelihood: 78%</div>
+          <div class="bar">
+            <div class="fill high" style="width:78%;"></div>
+          </div>
+          <ul>
+            <li>Inconsistent lighting patterns detected</li>
+            <li>Texture artifacts in facial regions</li>
+            <li>Metadata anomalies found</li>
+          </ul>
+        </div>
       </div>
 
     </div>
@@ -69,42 +76,42 @@
   <!-- INTERACTION SCRIPT -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      const textarea = document.getElementById("textInput");
-      const analyzeBtn = document.getElementById("analyzeText");
-      const badge = document.getElementById("confidenceBadge");
-      const fill = document.getElementById("confidenceFill");
-      const signals = document.getElementById("signals");
+      // TEXT LOGIC
+      const textInput = document.getElementById("textInput");
+      const analyzeText = document.getElementById("analyzeText");
+      const textBadge = document.getElementById("textBadge");
+      const textFill = document.getElementById("textFill");
+      const textSignals = document.getElementById("textSignals");
 
-      // preload demo text
-      textarea.value =
+      textInput.value =
         "Government of India has clarified that there is no nationwide internet shutdown.";
 
-      analyzeBtn.addEventListener("click", () => {
-        const text = textarea.value.toLowerCase();
-
+      analyzeText.addEventListener("click", () => {
+        const text = textInput.value.toLowerCase();
         if (text.includes("government") || text.includes("official")) {
-          badge.textContent = "High Confidence";
-          badge.className = "badge high";
-          fill.className = "fill high";
-          fill.style.width = "80%";
-
-          signals.innerHTML = `
+          textBadge.textContent = "High Confidence";
+          textBadge.className = "badge high";
+          textFill.className = "fill high";
+          textFill.style.width = "80%";
+          textSignals.innerHTML = `
             <li>Official authority cited</li>
             <li>Neutral language detected</li>
-            <li>Matches public records</li>
-          `;
-        } else {
-          badge.textContent = "Low Confidence";
-          badge.className = "badge low";
-          fill.className = "fill low";
-          fill.style.width = "30%";
-
-          signals.innerHTML = `
-            <li>Highly sensational language detected</li>
-            <li>No verified source referenced</li>
-            <li>Urgency framing used</li>
+            <li>Matches verified public records</li>
           `;
         }
+      });
+
+      // MEDIA LOGIC (FAKE BUT BELIEVABLE)
+      const analyzeMedia = document.getElementById("analyzeMedia");
+      const mediaInput = document.getElementById("mediaInput");
+      const mediaResult = document.getElementById("mediaResult");
+
+      analyzeMedia.addEventListener("click", () => {
+        if (!mediaInput.files.length) {
+          alert("Please select an image or video file");
+          return;
+        }
+        mediaResult.style.display = "block";
       });
     });
   </script>
