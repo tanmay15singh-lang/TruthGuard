@@ -3,12 +3,10 @@ from rules import evaluate_content
 
 app = Flask(__name__)
 
-# ---------------- HOME ----------------
 @app.route("/")
 def index():
     return render_template("index.html")
 
-# ---------------- TEXT ANALYSIS API ----------------
 @app.route("/analyze", methods=["POST"])
 def analyze():
     data = request.get_json()
