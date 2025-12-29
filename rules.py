@@ -4,8 +4,7 @@ def evaluate_content(text: str):
     reasons = []
     text_lower = text.lower()
 
-    # ---------- HARD LOW DETECTION (ABSOLUTE) ----------
-
+    # ---------- HARD LOW CONDITIONS ----------
     sensational_words = [
         "breaking", "shocking", "viral",
         "share this", "share fast", "urgent"
@@ -22,22 +21,30 @@ def evaluate_content(text: str):
     no_confirmation = any(p in text_lower for p in denial_phrases)
     has_source = "source:" in text_lower
 
-    # 🚨 ABSOLUTE RULES — NO RECOVERY
+    # ABSOLUTE LOW — NO RECOVERY
+    if sensational and (no_confirmation or not has_source):
+        if sensational:
+            reasons.append("Sensational language detected")
+        if no_confirmation:
+            reasons.append("No official confirmation mentioned")
+        if not has_source:
+            reasons.append("No clear source provided")
+
+        return "Low", reasons, explanation("Low")
+
+    # ---------- SCORING ----------
+    score = 0
+
     if sensational:
+        score -= 2
         reasons.append("Sensational language detected")
 
     if no_confirmation:
+        score -= 2
         reasons.append("No official confirmation mentioned")
 
-    if sensational and (no_confirmation or not has_source):
-        return "Low", reasons, explanation("Low")
-
-    # ---------- SCORING (ONLY CLEAN CONTENT REACHES HERE) ----------
-
-    score = 0
-
     if not has_source:
-        score -= 2
+        score -= 1
         reasons.append("No clear source provided")
 
     official_sources = [
@@ -56,14 +63,13 @@ def evaluate_content(text: str):
         score += 3
         reasons.append("Official or verified source mentioned")
 
-    # ⚠️ Fact-check ONLY applies if no sensational flags
+    # Fact-check ONLY if no sensational flags
     claims = check_fact(text)
     if claims and not sensational:
         score += 1
         reasons.append("Similar claims found in fact-check sources")
 
     # ---------- FINAL DECISION ----------
-
     if score >= 3:
         credibility = "High"
     elif score >= 0:
