@@ -4,50 +4,41 @@ def evaluate_content(text: str):
     reasons = []
     text_lower = text.lower()
 
-    # ---------- HARD FAIL CONDITIONS (NO RECOVERY) ----------
+    # ---------- HARD LOW DETECTION (ABSOLUTE) ----------
 
-    sensational = any(word in text_lower for word in [
-        "breaking", "shocking", "viral", "share fast", "share this", "urgent"
-    ])
+    sensational_words = [
+        "breaking", "shocking", "viral",
+        "share this", "share fast", "urgent"
+    ]
 
-    no_confirmation = any(phrase in text_lower for phrase in [
+    denial_phrases = [
         "no official source",
         "not confirmed",
         "unverified",
         "rumor"
-    ])
+    ]
 
+    sensational = any(w in text_lower for w in sensational_words)
+    no_confirmation = any(p in text_lower for p in denial_phrases)
     has_source = "source:" in text_lower
 
-    # 🚨 RULE 1: Sensational + no confirmation = ALWAYS LOW
-    if sensational and no_confirmation:
-        reasons.append("Sensational language detected")
-        reasons.append("No official confirmation mentioned")
-        return "Low", reasons, explanation("Low")
-
-    # 🚨 RULE 2: Sensational + no source = ALWAYS LOW
-    if sensational and not has_source:
-        reasons.append("Sensational language detected")
-        reasons.append("No clear source provided")
-        return "Low", reasons, explanation("Low")
-
-    # ---------- SCORING (ONLY IF NOT HARD-FAILED) ----------
-
-    score = 0
-
+    # 🚨 ABSOLUTE RULES — NO RECOVERY
     if sensational:
-        score -= 2
         reasons.append("Sensational language detected")
 
     if no_confirmation:
-        score -= 2
         reasons.append("No official confirmation mentioned")
 
-    if not has_source:
-        score -= 1
-        reasons.append("No clear source provided")
+    if sensational and (no_confirmation or not has_source):
+        return "Low", reasons, explanation("Low")
 
-    # ---------- POSITIVE SIGNALS ----------
+    # ---------- SCORING (ONLY CLEAN CONTENT REACHES HERE) ----------
+
+    score = 0
+
+    if not has_source:
+        score -= 2
+        reasons.append("No clear source provided")
 
     official_sources = [
         "official government",
@@ -65,26 +56,26 @@ def evaluate_content(text: str):
         score += 3
         reasons.append("Official or verified source mentioned")
 
+    # ⚠️ Fact-check ONLY applies if no sensational flags
     claims = check_fact(text)
-    if claims:
+    if claims and not sensational:
         score += 1
         reasons.append("Similar claims found in fact-check sources")
 
     # ---------- FINAL DECISION ----------
 
-    if score <= -2:
-        credibility = "Low"
-    elif -1 <= score <= 2:
+    if score >= 3:
+        credibility = "High"
+    elif score >= 0:
         credibility = "Medium"
     else:
-        credibility = "High"
+        credibility = "Low"
 
     return credibility, reasons, explanation(credibility)
 
 
 def explanation(level):
     return (
-        f"TruthGuard assigns '{level}' credibility using transparent rules. "
-        f"The decision is based on language tone, source reliability, "
-        f"and verification signals."
+        f"TruthGuard assigns '{level}' credibility using strict rule-based checks. "
+        f"Content flagged as sensational or unverified cannot receive high credibility."
     )
