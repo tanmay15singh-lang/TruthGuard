@@ -111,3 +111,5 @@ button {
   border-radius: 999px;
   margin: 10px 0;
   overflow: hi
+.badge.high { background: #22c55e; color: black; }
+.fill.high { background: #22c55e; }

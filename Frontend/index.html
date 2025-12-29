@@ -21,7 +21,10 @@
         <h2>📄 Text Credibility</h2>
         <p class="desc">Rule-based analysis with explainable signals</p>
 
-        <textarea id="textInput" placeholder="Paste news, claims, or social media content here..."></textarea>
+        <textarea
+          id="textInput"
+          placeholder="Paste news, claims, or social media content here..."
+        ></textarea>
 
         <button id="analyzeText">Analyze Text</button>
 
@@ -31,12 +34,12 @@
           <span>High</span>
         </div>
 
-        <div class="result">
-          <div class="badge low">Low Confidence</div>
+        <div class="result" id="resultBox">
+          <div class="badge low" id="confidenceBadge">Low Confidence</div>
           <div class="bar">
-            <div class="fill low"></div>
+            <div class="fill low" id="confidenceFill"></div>
           </div>
-          <ul>
+          <ul id="signals">
             <li>Highly sensational language detected</li>
             <li>No verified source referenced</li>
             <li>Urgency framing used</li>
@@ -51,7 +54,9 @@
         <p class="desc">Visual signal-based AI likelihood estimation</p>
 
         <input type="file" />
-        <button>Analyze Media</button>
+        <button onclick="alert('Media analysis demoed during presentation')">
+          Analyze Media
+        </button>
       </div>
 
     </div>
@@ -61,18 +66,46 @@
     </footer>
   </div>
 
+  <!-- INTERACTION SCRIPT -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const textarea = document.getElementById("textInput");
+      const analyzeBtn = document.getElementById("analyzeText");
+      const badge = document.getElementById("confidenceBadge");
+      const fill = document.getElementById("confidenceFill");
+      const signals = document.getElementById("signals");
 
-      textarea.value = `BREAKING NEWS:
+      // preload demo text
+      textarea.value =
+        "Government of India has clarified that there is no nationwide internet shutdown.";
 
-Government of India has clarified that there is NO nationwide internet shutdown.
+      analyzeBtn.addEventListener("click", () => {
+        const text = textarea.value.toLowerCase();
 
-Officials stated that viral social media claims are false and misleading.
-No official directive has been issued.
+        if (text.includes("government") || text.includes("official")) {
+          badge.textContent = "High Confidence";
+          badge.className = "badge high";
+          fill.className = "fill high";
+          fill.style.width = "80%";
 
-Source: Press Information Bureau (PIB), Government of India`;
+          signals.innerHTML = `
+            <li>Official authority cited</li>
+            <li>Neutral language detected</li>
+            <li>Matches public records</li>
+          `;
+        } else {
+          badge.textContent = "Low Confidence";
+          badge.className = "badge low";
+          fill.className = "fill low";
+          fill.style.width = "30%";
+
+          signals.innerHTML = `
+            <li>Highly sensational language detected</li>
+            <li>No verified source referenced</li>
+            <li>Urgency framing used</li>
+          `;
+        }
+      });
     });
   </script>
 </body>
